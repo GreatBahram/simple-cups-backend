@@ -4,7 +4,6 @@ import datetime
 import os
 import sys
 
-BUF_SIZE = 60 * 1024
 
 # Backend exit codes
 CUPS_BACKEND_OK = 0
@@ -15,7 +14,6 @@ CUPS_BACKEND_STOP = 4
 CUPS_BACKEND_CANCEL = 5
 CUPS_BACKEND_RETRY = 6
 CUPS_BACKEND_RETRY_CURRENT = 7
-
 
 
 class CUPSBackend:
