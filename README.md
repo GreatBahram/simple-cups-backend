@@ -1,4 +1,4 @@
-# Sample Cups Backend
+# Simple Cups Backend
 Simple CUPS backend that can be used for avoiding writing boilerplate every time.
 
 ## Installation
