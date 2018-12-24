@@ -25,7 +25,6 @@ cp sample.ppd /etc/cups/ppd/
 4. To install virtual printer using this backend, run something like:
 ```bash
  # this will install a printer named "Sample", 
- # printing to file "/tmp/kde4print.testfile.prn"
  lpadmin -p Sample \
          -v sample-backend:/ \
          -E \
