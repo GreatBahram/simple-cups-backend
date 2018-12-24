@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+import configparser
+import datetime
+import os
+import sys
+
+BUF_SIZE = 60 * 1024
+
+# Backend exit codes
+CUPS_BACKEND_OK = 0
+CUPS_BACKEND_FAILED = 1
+CUPS_BACKEND_AUTH_REQUIRED = 2
+CUPS_BACKEND_HOLD = 3
+CUPS_BACKEND_STOP = 4
+CUPS_BACKEND_CANCEL = 5
+CUPS_BACKEND_RETRY = 6
+CUPS_BACKEND_RETRY_CURRENT = 7
+
+
+
+class CUPSBackend:
+    """Base class for handling CUPS backend."""
+    def __init__(self):
+        """Initialize the CUPS backend wrapper."""
+        self.name = 'sample'
+        self.basename = None
+        self.job_id = None
+        self.username = None
+        self.pid = os.getpid()
+        self.title = None
+        self.copies = 1
+        self.print_options = None
+        self.jobfile = None
+        self.device_uri = None
+        self.request_datetime = None
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}: <{self.name}>"
+
+    def initialize_backend(self):
+        """Initialize the backend's attributes."""
+        self.log_info('Initialize simple backend.', 'debug')
+        self.job_id, self.username, self.title, self.copies, self.print_options = sys.argv[1:6]
+        self.copies = int(self.copies)
+        if len(sys.argv) == 7:
+            self.jobfile = sys.argv[6]
+            if not os.path.exists(self.jobfile):
+                self.log_info('Job file does not exist.', 'error')
+                raise OSError('Job file does not exist')
+        else:
+            self.jobfile = None
+        if self.jobfile:
+            self.input_file = open(self.jobfile, 'rb')
+        else:
+            self.input_file = sys.stdin
+        self.request_datetime = datetime.datetime.now()
+        self.output_file = f"{self.name}_{self.username}_{self.job_id}"
+
+    def read_config(self):
+        """Read the configuration file."""
+        self.log_info('Reading backend config file.', 'debug')
+        parser = configparser.ConfigParser()
+        config_dir = os.environ.get("CUPS_SERVERROOT", ".")
+        self.cfg = os.path.join(config_dir, f'{self.name}.cfg')
+        if os.path.exists(self.cfg):
+            parser.read(self.cfg)
+            self.parser = parser
+        else:
+            self.log_info('Configuration file not found.', 'error')
+            raise OSError('Configuration file not found.')
+
+    def get_global_option(self, option):
+        """Return an option from the global section, or raises a ConfigError."""
+        try:
+            return self.parser.get('global', option)
+        except (configparser.NoSectionError, configparser.NoOptionError):
+            self.log_info(f'ConfigParser cannot find {option} option or section.', 'error')
+            sys.exit(CUPS_BACKEND_FAILED)
+
+    def print_message(self, message_type):
+        """Print discovery and usage message."""
+        basename = os.path.basename(sys.argv[0])
+        if message_type == 'discovery':
+            msg = f"file {basename} \"Unknown\" \"Direct PDF Printing\"\n"
+            self.print_(msg)
+            sys.exit(CUPS_BACKEND_OK)
+        else:
+            msg = f"Usage: {basename} job-id user title copies options [file]\n"
+            self.print_(msg)
+            sys.exit(CUPS_BACKEND_FAILED)
+
+    def print_(self, message):
+        """ An new print function that acts as we want."""
+        sys.stdout.write(message)
+        sys.stdout.flush()
+
+    def log_info(self, message, level='info'):
+        """Log a message to CUPS 'error_log 'file."""
+        try:
+            sys.stderr.write(f"{level.upper()}: {self.name.title()} (PID {self.pid}) : {message}\n")
+            sys.stderr.flush()
+        except IOError:
+            pass
+
+    def custom_action(self):
+        """Run a custom action on CUPS' job"""
+        # Do what ever you want
+        return CUPS_BACKEND_OK
+
+    def cleanup(self):
+        """Cleans up the place."""
+        pass
+
+
+def main():
+    backend = CUPSBackend()
+    if len(sys.argv) == 1:
+        backend.print_message('discovery')
+    elif len(sys.argv) not in (6, 7):
+        backend.print_message('usage')
+    else:
+        return_code = CUPS_BACKEND_FAILED
+        try:
+            backend.read_config()
+            backend.initialize_backend()
+            return_code = backend.custom_action()
+        except Exception as e:
+            backend.log_info(e, level='debug')
+            return_code = CUPS_BACKEND_FAILED
+        finally:
+            backend.cleanup()
+        sys.exit(return_code)
+
+
+if __name__=='__main__':
+	main()

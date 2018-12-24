@@ -1,0 +1,119 @@
+*PPD-Adobe: "4.3"
+*%
+*% This PPD file is for using a PDF printer in its native PDF mode, with
+*% option settings controlled via PJL commands. It uses CUPS with the
+*% OpenPrinting CUPS Filters package.
+*%
+*% This PPD is experimental. It is possible that some of the options
+*% and settings do not make sense or do not cause any change on the output.
+*% It can even happen that with certain settings nothing or an error page
+*% comes out.
+*%
+*% This file is published under the GNU General Public License
+*%
+*% You may save this file as 'custom.ppd'
+*%
+*%
+*FormatVersion:	"4.3"
+*FileVersion:	"1.1"
+*LanguageVersion: English 
+*LanguageEncoding: ISOLatin1
+*PCFileName:	"PDF.PPD"
+*Manufacturer:	"@CUPS_BACKEND_MANUFACTURER@"
+*Product:       "(Generic PDF Printer)"
+*cupsVersion:	1.0
+*cupsManualCopies: True
+*cupsModelNumber:  2
+*ModelName:     "@CUPS_BACKEND_MODEL@"
+*ShortNickName: "@CUPS_BACKEND_MODEL@"
+*NickName:      "@CUPS_BACKEND_MODEL@"
+*PSVersion:     "(3010.107) 0"
+*LanguageLevel:	"3"
+*ColorDevice:	True
+*DefaultColorSpace: CMYK
+*FileSystem:	False
+*Throughput:	"30"
+*LandscapeOrientation: Plus90
+*TTRasterizer:	Type42
+*1284DeviceID: "MFG:@CUPS_BACKEND_MANUFACTURER@;CMD:PJL,PDF;MDL:@CUPS_BACKEND_MODEL@;CLS:PRINTER;DES:@CUPS_BACKEND_DESCRIPTION@;DRV:DPDF,R1,M0;"
+*JCLBegin:            "<1B>%-12345X@PJL JOB<0A>"
+*JCLToPDFInterpreter: "@PJL ENTER LANGUAGE = PDF<0A>"
+*JCLEnd:              "<1B>%-12345X@PJL EOJ <0A><1B>%-12345X"
+*cupsFilter: "application/pdf 0 -"
+*cupsFilter: "application/vnd.cups-pdf 0 -"
+*cupsFilter: "application/postscript 0 -"
+*cupsFilter: "application/vnd.cups-postscript 0 -"
+
+*OpenGroup: General/General
+*JCLOpenUI *PageSize/Page Size: PickOne
+*OrderDependency: 100 JCLSetup *PageSize
+*DefaultPageSize: A4
+*PageSize Letter/Letter: "@PJL SET PAPER=LETTER<0A>"
+*PageSize A4/A4: "@PJL SET PAPER=A4<0A>"
+*PageSize A5/A5: "@PJL SET PAPER=A5<0A>"
+*PageSize A6/A6: "@PJL SET PAPER=A6<0A>"
+*JCLCloseUI: *PageSize
+
+*JCLOpenUI *PageRegion: PickOne
+*OrderDependency: 100 JCLSetup *PageRegion
+*DefaultPageRegion: A4
+*PageRegion Letter/Letter: "@PJL SET PAPER=LETTER<0A>"
+*PageRegion A4/A4: "@PJL SET PAPER=A4<0A>"
+*PageRegion A5/A5: "@PJL SET PAPER=A5<0A>"
+*PageRegion A6/A6: "@PJL SET PAPER=A6<0A>"
+*JCLCloseUI: *PageRegion
+
+*DefaultImageableArea: A4
+*ImageableArea Letter/Letter: "18 36 594 756"
+*ImageableArea A4/A4: "18 36 577 806"
+*ImageableArea A5/A5: "18 36 402 559"
+*ImageableArea A6/A6: "18 36 279 384"
+
+*DefaultPaperDimension: A4
+*PaperDimension Letter/Letter: "612 792"
+*PaperDimension A4/A4: "595 842"
+*PaperDimension A5/A5: "420 595"
+*PaperDimension A6/A6: "297 420"
+
+*CloseGroup: General
+
+
+*% Generic boilerplate PPD stuff as standard PostScript fonts and so on
+
+*DefaultFont: Courier
+*Font AvantGarde-Book: Standard "(001.006S)" Standard ROM
+*Font AvantGarde-BookOblique: Standard "(001.006S)" Standard ROM
+*Font AvantGarde-Demi: Standard "(001.007S)" Standard ROM
+*Font AvantGarde-DemiOblique: Standard "(001.007S)" Standard ROM
+*Font Bookman-Demi: Standard "(001.004S)" Standard ROM
+*Font Bookman-DemiItalic: Standard "(001.004S)" Standard ROM
+*Font Bookman-Light: Standard "(001.004S)" Standard ROM
+*Font Bookman-LightItalic: Standard "(001.004S)" Standard ROM
+*Font Courier: Standard "(002.004S)" Standard ROM
+*Font Courier-Bold: Standard "(002.004S)" Standard ROM
+*Font Courier-BoldOblique: Standard "(002.004S)" Standard ROM
+*Font Courier-Oblique: Standard "(002.004S)" Standard ROM
+*Font Helvetica: Standard "(001.006S)" Standard ROM
+*Font Helvetica-Bold: Standard "(001.007S)" Standard ROM
+*Font Helvetica-BoldOblique: Standard "(001.007S)" Standard ROM
+*Font Helvetica-Narrow: Standard "(001.006S)" Standard ROM
+*Font Helvetica-Narrow-Bold: Standard "(001.007S)" Standard ROM
+*Font Helvetica-Narrow-BoldOblique: Standard "(001.007S)" Standard ROM
+*Font Helvetica-Narrow-Oblique: Standard "(001.006S)" Standard ROM
+*Font Helvetica-Oblique: Standard "(001.006S)" Standard ROM
+*Font NewCenturySchlbk-Bold: Standard "(001.009S)" Standard ROM
+*Font NewCenturySchlbk-BoldItalic: Standard "(001.007S)" Standard ROM
+*Font NewCenturySchlbk-Italic: Standard "(001.006S)" Standard ROM
+*Font NewCenturySchlbk-Roman: Standard "(001.007S)" Standard ROM
+*Font Palatino-Bold: Standard "(001.005S)" Standard ROM
+*Font Palatino-BoldItalic: Standard "(001.005S)" Standard ROM
+*Font Palatino-Italic: Standard "(001.005S)" Standard ROM
+*Font Palatino-Roman: Standard "(001.005S)" Standard ROM
+*Font Symbol: Special "(001.007S)" Special ROM
+*Font Times-Bold: Standard "(001.007S)" Standard ROM
+*Font Times-BoldItalic: Standard "(001.009S)" Standard ROM
+*Font Times-Italic: Standard "(001.007S)" Standard ROM
+*Font Times-Roman: Standard "(001.007S)" Standard ROM
+*Font ZapfChancery-MediumItalic: Standard "(001.007S)" Standard ROM
+*Font ZapfDingbats: Special "(001.004S)" Standard ROM
+
